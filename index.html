@@ -17,11 +17,12 @@ Tong Garden Running
 
 <style>
 
+
 body{
 
 background:#001F5B;
 
-font-family:Arial;
+font-family:Arial,sans-serif;
 
 text-align:center;
 
@@ -32,22 +33,6 @@ padding:20px;
 }
 
 
-.box{
-
-background:white;
-
-border-radius:20px;
-
-padding:25px;
-
-max-width:400px;
-
-margin:auto;
-
-color:#001F5B;
-
-}
-
 
 h1{
 
@@ -56,24 +41,136 @@ color:#D4AF37;
 }
 
 
-.reward{
 
-text-align:left;
+#status{
+
+margin-bottom:20px;
 
 font-size:18px;
 
-margin:15px;
+color:#D4AF37;
 
 }
 
 
-button{
+
+.box{
+
+
+background:white;
+
+border-radius:20px;
+
+padding:25px;
+
+max-width:420px;
+
+margin:auto;
+
+color:#001F5B;
+
+
+}
+
+
+
+h2{
+
+color:#001F5B;
+
+}
+
+
+
+
+.reward{
+
+
+display:flex;
+
+align-items:center;
+
+gap:12px;
+
+padding:15px;
+
+margin:12px 0;
+
+border-radius:15px;
+
+border:2px solid #D4AF37;
+
+font-size:17px;
+
+font-weight:bold;
+
+
+}
+
+
+
+.reward:nth-child(even){
+
+
+background:#001F5B;
+
+color:#D4AF37;
+
+
+}
+
+
+
+.reward:nth-child(odd){
+
 
 background:#D4AF37;
 
 color:#001F5B;
 
-border:none;
+
+}
+
+
+
+.reward input{
+
+
+width:22px;
+
+height:22px;
+
+cursor:pointer;
+
+
+}
+
+
+
+.reward label{
+
+
+cursor:pointer;
+
+text-align:left;
+
+flex:1;
+
+
+}
+
+
+
+button{
+
+
+margin-top:20px;
+
+background:#001F5B;
+
+color:#D4AF37;
+
+border:3px solid #D4AF37;
 
 padding:15px;
 
@@ -85,27 +182,30 @@ font-size:18px;
 
 font-weight:bold;
 
+cursor:pointer;
+
+
 }
+
 
 
 button:hover{
 
-opacity:.8;
+
+background:#D4AF37;
+
+color:#001F5B;
+
 
 }
 
-
-#status{
-
-color:#D4AF37;
-
-}
 
 
 </style>
 
 
 </head>
+
 
 
 <body>
@@ -116,9 +216,12 @@ color:#D4AF37;
 </h1>
 
 
+
 <div id="status">
 กำลัง Login LINE...
 </div>
+
+
 
 
 <div class="box">
@@ -132,53 +235,90 @@ color:#D4AF37;
 
 <div class="reward">
 
-<input type="radio" name="km" value="3">
 
-3 KM  
-<br>
-🎁 ดีลักซ์คอกเทลนัท
+<input 
+type="radio"
+id="km3"
+name="km"
+value="3">
+
+
+<label for="km3">
+
+3 KM 🎁 ดีลักซ์คอกเทลนัท
+
+</label>
+
 
 </div>
+
 
 
 
 <div class="reward">
 
-<input type="radio" name="km" value="5">
 
-5 KM  
-<br>
-🎁 เกาลัดอบแบบแกะเปลือก
+<input 
+type="radio"
+id="km5"
+name="km"
+value="5">
+
+
+<label for="km5">
+
+5 KM 🎁 เกาลัดอบแบบแกะเปลือก
+
+</label>
+
 
 </div>
+
 
 
 
 <div class="reward">
 
-<input type="radio" name="km" value="7">
 
-7 KM  
-<br>
-🎁 ฮาร์ทตี้มิกซ์
+<input 
+type="radio"
+id="km7"
+name="km"
+value="7">
+
+
+<label for="km7">
+
+7 KM 🎁 ฮาร์ทตี้มิกซ์
+
+</label>
+
 
 </div>
+
 
 
 
 <div class="reward">
 
-<input type="radio" name="km" value="10">
 
-10 KM  
-<br>
-🎁 เดลี่แพ็กถุงใหญ่
+<input 
+type="radio"
+id="km10"
+name="km"
+value="10">
+
+
+<label for="km10">
+
+10 KM 🎁 เดลี่แพ็กถุงใหญ่
+
+</label>
+
 
 </div>
 
 
-
-<br>
 
 
 <button onclick="submitReward()">
@@ -188,7 +328,10 @@ color:#D4AF37;
 </button>
 
 
+
 </div>
+
+
 
 
 
@@ -200,27 +343,35 @@ let userId="";
 let displayName="";
 
 
-// เปลี่ยนเป็น URL Web App ของ GAS
+
+// Google Apps Script Web App URL
 
 const API_URL =
-"https://script.google.com/macros/s/AKfycbyTTi2ORKp3qT2X4NLn4SfLW5m9oiPnSd4opY-4jpGje-jffr7tETMWCwf5nd_OLzSn7w/exec";
+
+"https://script.google.com/macros/s/AKfycbwOEDtWIxmB_n9T8w2QcTFm7W4EpKzGjdKW9sgaOhSYJ9qBMlgaClbAEMR9XmY7Rmr0rg/exec";
 
 
 
-// สาขา ส่งมาจาก QR
 
-const branch =
-new URLSearchParams(location.search)
-.get("branch");
+// LIFF ID
+
+const LIFF_ID =
+
+"2010718191-p2tclQlw";
+
+
 
 
 
 async function main(){
 
 
+try{
+
+
 await liff.init({
 
-liffId:"2010718191-p2tclQlw"
+liffId:LIFF_ID
 
 });
 
@@ -228,29 +379,31 @@ liffId:"2010718191-p2tclQlw"
 
 if(!liff.isLoggedIn()){
 
+
 liff.login();
 
 return;
+
 
 }
 
 
 
+
 const profile =
+
 await liff.getProfile();
 
 
 
-userId =
-profile.userId;
+userId = profile.userId;
 
 
-displayName =
-profile.displayName;
+displayName = profile.displayName;
 
 
 
-document.getElementById("status").innerHTML=
+document.getElementById("status").innerHTML =
 
 "สวัสดี "+displayName;
 
@@ -258,29 +411,71 @@ document.getElementById("status").innerHTML=
 
 }
 
+catch(err){
+
+
+document.getElementById("status").innerHTML=
+
+"❌ LINE Login Error";
+
+
+console.log(err);
+
+
+}
+
+
+}
+
+
+
 
 
 async function submitReward(){
 
 
+
 let km =
+
 document.querySelector(
+
 'input[name="km"]:checked'
+
 );
 
 
 
 if(!km){
 
+
 alert("กรุณาเลือกระยะทาง");
 
+
 return;
+
 
 }
 
 
 
+
+if(!userId){
+
+
+alert("LINE ยังไม่ Login");
+
+
+return;
+
+
+}
+
+
+
+
+
 let data={
+
 
 userId:userId,
 
@@ -288,20 +483,27 @@ name:displayName,
 
 km:km.value
 
+
 };
+
+
 
 
 
 fetch(API_URL,{
 
+
 method:"POST",
 
+
 body:JSON.stringify(data)
+
 
 })
 
 
-.then(r=>r.json())
+
+.then(response=>response.json())
 
 
 .then(result=>{
@@ -310,10 +512,25 @@ body:JSON.stringify(data)
 alert(result.message);
 
 
+})
+
+
+
+.catch(error=>{
+
+
+alert("เกิดข้อผิดพลาด");
+
+
+console.log(error);
+
+
 });
 
 
+
 }
+
 
 
 
