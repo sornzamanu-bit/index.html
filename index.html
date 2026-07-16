@@ -5,9 +5,7 @@
 
 <meta charset="UTF-8">
 
-<meta name="viewport"
-content="width=device-width,initial-scale=1">
-
+<meta name="viewport" content="width=device-width,initial-scale=1">
 
 <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
 
@@ -21,9 +19,14 @@ Tong Garden Running
 
 body{
 
+background:#001F5B;
+
 font-family:Arial;
-background:#fff4e6;
+
 text-align:center;
+
+color:#D4AF37;
+
 padding:20px;
 
 }
@@ -32,30 +35,69 @@ padding:20px;
 .box{
 
 background:white;
-padding:25px;
+
 border-radius:20px;
+
+padding:25px;
+
+max-width:400px;
+
+margin:auto;
+
+color:#001F5B;
 
 }
 
 
-input{
+h1{
 
-font-size:20px;
-padding:10px;
-width:80%;
+color:#D4AF37;
+
+}
+
+
+.reward{
+
+text-align:left;
+
+font-size:18px;
+
+margin:15px;
 
 }
 
 
 button{
 
-margin-top:20px;
-padding:15px 30px;
+background:#D4AF37;
+
+color:#001F5B;
+
+border:none;
+
+padding:15px;
+
+width:90%;
+
+border-radius:30px;
+
 font-size:18px;
-background:#8B4513;
-color:white;
-border:0;
-border-radius:10px;
+
+font-weight:bold;
+
+}
+
+
+button:hover{
+
+opacity:.8;
+
+}
+
+
+#status{
+
+color:#D4AF37;
 
 }
 
@@ -69,17 +111,69 @@ border-radius:10px;
 <body>
 
 
+<h1>
+🏃 Tong Garden Running
+</h1>
+
+
+<div id="status">
+กำลัง Login LINE...
+</div>
+
+
 <div class="box">
 
 
 <h2>
-🏃 Tong Garden Running
+เลือกระยะทาง
 </h2>
 
 
 
-<div id="user">
-กำลัง Login LINE...
+<div class="reward">
+
+<input type="radio" name="km" value="3">
+
+3 KM  
+<br>
+🎁 ดีลักซ์คอกเทลนัท
+
+</div>
+
+
+
+<div class="reward">
+
+<input type="radio" name="km" value="5">
+
+5 KM  
+<br>
+🎁 เกาลัดอบแบบแกะเปลือก
+
+</div>
+
+
+
+<div class="reward">
+
+<input type="radio" name="km" value="7">
+
+7 KM  
+<br>
+🎁 ฮาร์ทตี้มิกซ์
+
+</div>
+
+
+
+<div class="reward">
+
+<input type="radio" name="km" value="10">
+
+10 KM  
+<br>
+🎁 เดลี่แพ็กถุงใหญ่
+
 </div>
 
 
@@ -87,26 +181,11 @@ border-radius:10px;
 <br>
 
 
-<input
-id="km"
-type="number"
-placeholder="ใส่ระยะ KM"
-/>
-
-
-<br>
-
-
-<button onclick="receive()">
+<button onclick="submitReward()">
 
 🎁 รับโปรโมชั่น
 
 </button>
-
-
-
-<h3 id="result"></h3>
-
 
 
 </div>
@@ -115,89 +194,140 @@ placeholder="ใส่ระยะ KM"
 
 <script>
 
-const LIFF_ID = "2010718191-p2tclQlw";
+
+let userId="";
+
+let displayName="";
 
 
-async function initLIFF() {
-    try {
+// เปลี่ยนเป็น URL Web App ของ GAS
 
-        await liff.init({
-            liffId: "2010718191-p2tclQlw"
-        });
+const API_URL =
+"https://script.google.com/macros/s/AKfycbwbUyRN_gx1zHWVu2VfyfKOn7smWr7CMsTkUHKPCcaQTQ7mJyL7Q14DqtbfyKIdi7Rkxg/exec";
 
-        if (!liff.isLoggedIn()) {
-            liff.login({
-                redirectUri: window.location.href
-            });
-            return;
-        }
 
-        const profile = await liff.getProfile();
 
-        document.getElementById("user").innerHTML =
-            "✅ " + profile.displayName;
+// สาขา ส่งมาจาก QR
 
-    } catch (err) {
+const branch =
+new URLSearchParams(location.search)
+.get("branch");
 
-        document.getElementById("user").innerHTML =
-            err.toString();
 
-        console.error(err);
 
-    }
+async function main(){
+
+
+await liff.init({
+
+liffId:"2010718191-p2tclQlw"
+
+});
+
+
+
+if(!liff.isLoggedIn()){
+
+liff.login();
+
+return;
+
 }
 
 
 
-initLIFF();
+const profile =
+await liff.getProfile();
 
-async function receive() {
 
-    if (!liff.isLoggedIn()) {
-        alert("กรุณา Login LINE");
-        return;
-    }
 
-    const profile = await liff.getProfile();
+userId =
+profile.userId;
 
-    const km = document.getElementById("km").value;
 
-    if (!km) {
-        alert("กรุณากรอกระยะ KM");
-        return;
-    }
+displayName =
+profile.displayName;
 
-    const response = await fetch(
-        "https://script.google.com/macros/s/AKfycbzBWLIQojruLgPmUUchEX6NikAzwGRjzCNREuBn58X0oB4jEHG35two1csCOaZ0TcIMzA/exec",
-        {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-                userId: profile.userId,
-                name: profile.displayName,
-                km: km
-            })
-        }
-    );
 
-    const result = await response.json();
 
-    if (result.success) {
-        document.getElementById("result").innerHTML =
-            "🎉 ได้รับ " + result.reward;
-    } else {
-        document.getElementById("result").innerHTML =
-            result.message;
-    }
+document.getElementById("status").innerHTML=
+
+"สวัสดี "+displayName;
+
+
+
 }
+
+
+
+async function submitReward(){
+
+
+let km =
+document.querySelector(
+'input[name="km"]:checked'
+);
+
+
+
+if(!km){
+
+alert("กรุณาเลือกระยะทาง");
+
+return;
+
+}
+
+
+
+let data={
+
+
+userId:userId,
+
+name:displayName,
+
+km:km.value,
+
+branch:branch || "MAIN"
+
+
+};
+
+
+
+fetch(API_URL,{
+
+method:"POST",
+
+body:JSON.stringify(data)
+
+})
+
+
+.then(r=>r.json())
+
+
+.then(result=>{
+
+
+alert(result.message);
+
+
+});
+
+
+}
+
+
+
+main();
+
 
 
 </script>
 
 
 </body>
-
 
 </html>
